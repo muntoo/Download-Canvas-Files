@@ -1,4 +1,3 @@
-
 // Copyright 2015, Mateen Ulhaq <mulhaq2005@gmail.com>
 // Licensed under CC-By-Attr 3.0
 
@@ -12,50 +11,6 @@
 // Ctrl + A
 // Ctrl + C
 // Go paste! With haste! Quickly! Do it now!
-
-
-/*
-function downloadURI(uri, name) {
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', uri, true);
-	xhr.responseType = 'blob';
-
-	xhr.onload = function(e) {
-		if (this.status == 200) {
-			var blob = new Blob([this.response], {type: 'application/pdf'});
-			var url = URL.createObjectURL(blob);
-			var _iFrame = document.createElement('iframe');
-
-			_iFrame.setAttribute('src', url);
-			_iFrame.setAttribute('style', 'visibility:hidden;');
-			$('#someDiv').append(_iFrame)
-		}
-	};
-
-	xhr.send();
-}
-
-
-function downloadURI(uri, name) {
-	var link = document.createElement("a");
-	link.download = name;
-	link.href = uri;
-	link.click();
-}
-
-
-function downloadURI(uri, name) {
-	var link = document.createElement('a');
-	link.setAttribute('download', name);
-	link.href = uri;
-
-	window.document.body.appendChild(link);
-	link.click();
-	window.document.body.removeChild(link);
-}
-
-*/
-
 
 
 function getCourseName() {
