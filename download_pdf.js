@@ -110,35 +110,14 @@ function downloadPDFs(category) {
 }
 
 
-// Downloads all PDFs from file tree
-function downloadPDFsRecursively() {
-	var pdflinks = [];
-	var names = [];
-
-	console.log("Preparing downloads... Please wait...\n");
-
-	// Expand file tree
-	var plus = document.querySelectorAll("span[class=\"sign plus\"]");
-	for(var i = 0; i < plus.length; ++i) {
-		plus[i].click();
-	}
-
-	// Get folders and download from each
-	var folders = document.querySelectorAll("span[class*=\"text name ui-droppable\"]");
-	for(var i = 0; i < folders.length; ++i) {
-		setTimeout(
-			function(e, category) {
-				e.click();
-				downloadPDFs(category);
-			},
-			5000 + i * 1000,   // delay timer
-			folders[i],
-			folders[i].textContent
-		);
-	}
+// Downloads everything
+// Works only on /files tree
+function downloadEverything() {
+	var zip = document.querySelector("span[class=\"download_zip\"]");
+	zip.click();
 }
 
 
 downloadPDFs("Download Links");
-// downloadPDFsRecursively();
+downloadEverything();
 
