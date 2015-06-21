@@ -52,15 +52,20 @@ function fixName(documentName, courseName) {
 	var trail = "(\\s|_|\\-)?";
 	var trailchar = "((\\s|_|\\-)\\w+)?";
 
-	// Parse: Remove char + course number from start of string
-	var re = new RegExp("^\\w+" + num + trail, "i");
+	// Parse: Get filetype. If none, default to .pdf
+	var re = new RegExp("\\.\\w+$");
+	var filetype = re.exec(documentName);
 	documentName = documentName.replace(re, "");
 
-	// Parse: Remove dep, num, and .pdf
+	// Parse: Remove char + course number from start of string
+	re = new RegExp("^\\w+" + num + trail, "i");
+	documentName = documentName.replace(re, "");
+
+	// Parse: Remove dep and num
 	re = new RegExp(
 		"(" + dep + trail +
 		")|(" + trailchar + num + trail +
-		")|(\.pdf)",
+		")",
 		"ig");
 	documentName = documentName.replace(re, "");
 
@@ -70,12 +75,11 @@ function fixName(documentName, courseName) {
 	// Parse: Convert "mt" to uppercase, and replace "midterm"
 	documentName = documentName.replace(/(MT)|(midterm)/ig, "MT");
 
-	return courseName + " - " + documentName + ".pdf";
+	return courseName + " - " + documentName + filetype;
 }
 
 
-function downloadPDFs()
-{
+function downloadPDFs(category) {
 	var pdflinks = [];
 	var names = [];
 
@@ -84,14 +88,15 @@ function downloadPDFs()
 		document.querySelectorAll("a[href$=\"download?wrap=1\"]"),
 		function(e, i) {
 			// If unique link found, push onto stack
-			if((pdflinks || []).indexOf(e.href) == -1) {
+			if((pdflinks || []).indexOf(e.href) == -1 &&
+				/\d+\/download\?wrap=1$/.test(e.href)) {
 				pdflinks.push(e.href);
 				names.push(e.textContent);
 			}
 		});
 
 	// Log download links
-	console.log("Download Links:\n" + pdflinks.join("\n"));
+	console.log(category + ":\n" + pdflinks.join("\n"));
 
 	// Fix PDF names
 	names.forEach(function (e, i) {
@@ -105,4 +110,35 @@ function downloadPDFs()
 }
 
 
-downloadPDFs();
+// Downloads all PDFs from file tree
+function downloadPDFsRecursively() {
+	var pdflinks = [];
+	var names = [];
+
+	console.log("Preparing downloads... Please wait...\n");
+
+	// Expand file tree
+	var plus = document.querySelectorAll("span[class=\"sign plus\"]");
+	for(var i = 0; i < plus.length; ++i) {
+		plus[i].click();
+	}
+
+	// Get folders and download from each
+	var folders = document.querySelectorAll("span[class*=\"text name ui-droppable\"]");
+	for(var i = 0; i < folders.length; ++i) {
+		setTimeout(
+			function(e, category) {
+				e.click();
+				downloadPDFs(category);
+			},
+			5000 + i * 1000,   // delay timer
+			folders[i],
+			folders[i].textContent
+		);
+	}
+}
+
+
+downloadPDFs("Download Links");
+// downloadPDFsRecursively();
+
