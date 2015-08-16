@@ -15,7 +15,25 @@
 
 function getCourseName() {
 	var re = /((ACMA)|(ALS)|(APMA)|(ARAB)|(ARCH)|(ASC)|(BISC)|(BPK)|(BUS)|(BUEC)|(CHEM)|(CHIN)|(COGS)|(CMNS)|(CMPT)|(CRIM)|(DEVS)|(DIAL)|(DMED)|(EASC)|(ECO)|(ECON)|(EDUC)|(EDPR)|(ETEC)|(ENSC)|(ENGL)|(EAS)|(ENV)|(EVSC)|(EXPL)|(FPA)|(FNLG)|(FNST)|(FAL)|(FAN)|(FREN)|(GSWS)|(GS)|(GEOG)|(GERM)|(GERO)|(GRK)|(HSCI)|(HS)|(HIST)|(HUM)|(IAT)|(IS)|(ISPO)|(ITAL)|(JAPN)|(LBST)|(LANG)|(LAS)|(LBRL)|(LS)|(LING)|(MSSC)|(MTEC)|(MASC)|(MATH)|(MACM)|(MSE)|(MBB)|(MPP)|(NUSC)|(PERS)|(PHIL)|(PHYS)|(POL)|(PSYC)|(PLCY)|(PUB)|(REM)|(SCI)|(SA)|(SPAN)|(SAR)|(STAT)|(SCD)|(URB)|(WL))\s?\d+/;
-	return re.exec(document.title)[0];
+	var name;
+
+	// Check if static member is already initialized
+	// Prevents reprompts for course name
+	if(typeof getCourseName.courseName == 'undefined') {
+		try {
+			name = re.exec(document.title)[0];
+		}
+		catch(err) {
+			name = window.prompt("Please enter course name:","");
+		}
+
+		getCourseName.courseName = name;
+	}
+	else {
+		name = getCourseName.courseName;
+	}
+
+	return name;
 }
 
 
@@ -85,11 +103,11 @@ function downloadPDFs(category) {
 
 	// Get download links
 	Array.prototype.map.call(
-		document.querySelectorAll("a[href$=\"download?wrap=1\"]"),
+		document.querySelectorAll("a[href*=\"download\"]"),
 		function(e, i) {
 			// If unique link found, push onto stack
 			if((pdflinks || []).indexOf(e.href) == -1 &&
-				/\d+\/download\?wrap=1$/.test(e.href)) {
+				/\d+\/download\?.+=1$/.test(e.href)) {
 				pdflinks.push(e.href);
 				names.push(e.textContent);
 			}
